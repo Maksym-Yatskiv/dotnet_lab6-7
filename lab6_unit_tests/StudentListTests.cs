@@ -98,4 +98,114 @@ public class StudentListTests
         var comparer = new StudentGroupComparer();
         Assert.IsTrue(comparer.Compare(s1, s2) > 0);
     }
+
+
+
+
+    [TestMethod]
+    public void FindByName_FindsCaseInsensitivePartialMatch()
+    {
+        var list = new StudentList(null, null, "");
+        list.AddStudent(new Student("Іван Петренко", "G1", 10, 10, 10));
+        list.AddStudent(new Student("Марія", "G1", 20, 20, 20));
+        list.AddStudent(new Student("Петро ІВАНЕНКО", "G2", 15, 15, 15));
+
+        list.FindByName("іван");
+
+        Assert.AreEqual(2, list.Students.Count);
+        Assert.IsTrue(list.Students.Any(s => s.Name == "Іван Петренко"));
+        Assert.IsTrue(list.Students.Any(s => s.Name == "Петро ІВАНЕНКО"));
+    }
+
+    [TestMethod]
+    public void GetTopTenByTotalScore_ReturnsTop10Ordered()
+    {
+        var list = new StudentList(null, null, "");
+
+
+        for (int i = 0; i < 15; i++)
+        {
+            list.AddStudent(new Student($"S{i}", $"G{i % 3}", i, i, i));
+        }
+
+        list.GetTopTenByTotalScore();
+
+        
+        Assert.AreEqual(10, list.Students.Count);
+
+
+        int firstTotal = list.Students[0].Exam1 + list.Students[0].Exam2 + list.Students[0].Exam3;
+        int secondTotal = list.Students[1].Exam1 + list.Students[1].Exam2 + list.Students[1].Exam3;
+        Assert.IsTrue(firstTotal >= secondTotal);
+
+        Assert.AreEqual("S14", list.Students[0].Name);
+        Assert.AreEqual("S5", list.Students.Last().Name);
+    }
+
+    [TestMethod]
+    public void GetAverageExamScore_ReturnsCorrectAveragePerExam()
+    {
+        var list = new StudentList(null, null, "");
+        list.AddStudent(new Student("A", "G1", 10, 20, 30));
+        list.AddStudent(new Student("B", "G1", 20, 30, 40));
+        list.AddStudent(new Student("C", "G1", 30, 40, 40));
+
+        double avg1 = list.GetAverageExamScore("Exam1");
+        double avg2 = list.GetAverageExamScore("Exam2");
+        double avg3 = list.GetAverageExamScore("Exam3");
+
+        Assert.AreEqual((10 + 20 + 30) / 3.0, avg1);
+        Assert.AreEqual((20 + 30 + 40) / 3.0, avg2);
+        Assert.AreEqual((30 + 40 + 40) / 3.0, avg3);
+    }
+
+    [TestMethod]
+    [ExpectedException(typeof(ArgumentException))]
+    public void GetAverageExamScore_InvalidExam_ThrowsArgumentException()
+    {
+        var list = new StudentList(null, null, "");
+        list.AddStudent(new Student("A", "G1", 10, 20, 30));
+
+        _ = list.GetAverageExamScore("ExamX");
+    }
+
+    [TestMethod]
+    public void GetBestInGroup_ReturnsOneBestPerGroup()
+    {
+        var list = new StudentList(null, null, "");
+        // Група G1: B(90) best, A(60)
+        list.AddStudent(new Student("A", "G1", 20, 20, 20));
+        list.AddStudent(new Student("B", "G1", 30, 30, 30));
+
+        // Група G2: D(85) best, C(70)
+        list.AddStudent(new Student("C", "G2", 20, 25, 25));
+        list.AddStudent(new Student("D", "G2", 30, 30, 25));
+
+        // Група G3: single E
+        list.AddStudent(new Student("E", "G3", 10, 10, 10));
+
+        list.GetBestInGroup();
+
+        Assert.AreEqual(3, list.Students.Count);
+
+        Assert.IsTrue(list.Students.Any(s => s.GroupNumber == "G1" && s.Name == "B"));
+        Assert.IsTrue(list.Students.Any(s => s.GroupNumber == "G2" && s.Name == "D"));
+        Assert.IsTrue(list.Students.Any(s => s.GroupNumber == "G3" && s.Name == "E"));
+    }
+
+    [TestMethod]
+    public void GetBestStudent_ReturnsOverallBestStudentInfo()
+    {
+        var list = new StudentList(null, null, "");
+        list.AddStudent(new Student("A", "G1", 10, 10, 10));
+        list.AddStudent(new Student("B", "G2", 30, 30, 30));
+        list.AddStudent(new Student("C", "G1", 20, 20, 20));
+
+        var best = list.GetBestStudent();
+
+        Assert.IsNotNull(best);
+        Assert.AreEqual("B", best!.Name);
+        Assert.AreEqual("G2", best.GroupNumber);
+        Assert.AreEqual((30 + 30 + 30) / 3.0, best.AverageScore);
+    }
 }

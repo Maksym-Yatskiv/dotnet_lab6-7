@@ -95,5 +95,60 @@ namespace lab6.Classes
         }
 
 
+        public void FindByName(string name)
+        {
+            var students = _students
+                .Where(s => s.Name.Contains(name, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+            RefreshObservableCollection(students);
+        }
+
+        public void GetTopTenByTotalScore()
+        {
+            var students = _students
+                .OrderByDescending(s => (s.Exam1 + s.Exam2 + s.Exam3) / 3.0)
+                .Take(10)
+                .ToList();
+            RefreshObservableCollection(students);
+        }
+
+        public double GetAverageExamScore(string examNumber)
+        {
+            if (_students.Count == 0) return 0;
+
+            return examNumber switch
+            {
+                "Exam1" => _students.Average(s => s.Exam1),
+                "Exam2" => _students.Average(s => s.Exam2),
+                "Exam3" => _students.Average(s => s.Exam3),
+                _ => throw new ArgumentException("Іспит не вказаний")
+            };
+        }
+
+        public void GetBestInGroup()
+        {
+        var groupedStudents = _students
+            .GroupBy(s => s.GroupNumber, StringComparer.OrdinalIgnoreCase)
+            .Select(g => g
+                .OrderByDescending(s => (s.Exam1 + s.Exam2 + s.Exam3) / 3.0)
+                .First())
+            .ToList();
+            RefreshObservableCollection(groupedStudents);
+        }
+
+        public record BestStudentInfo(string Name, string GroupNumber, double AverageScore);
+        public BestStudentInfo? GetBestStudent()
+        {
+            var bestStudent = _students
+                .OrderByDescending(s => (s.Exam1 + s.Exam2 + s.Exam3) / 3)
+                .Select(s => new BestStudentInfo(
+                    s.Name, 
+                    s.GroupNumber, 
+                    (s.Exam1 + s.Exam2 + s.Exam3) / 3)
+                )
+                .FirstOrDefault();
+
+            return bestStudent;
+        }
     }
 }

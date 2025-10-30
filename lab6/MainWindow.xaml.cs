@@ -103,6 +103,7 @@ namespace lab6
 
         private void btnFilter_Click(object sender, RoutedEventArgs e)
         {
+
             if (!(cmbSortBy.SelectedItem is ComboBoxItem cbItem) || !(cbItem.Content is string examKey))
             {
                 MessageBox.Show("Оберіть іспит для фільтрації.", "Фільтр", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -137,6 +138,7 @@ namespace lab6
         {
             try
             {
+                _studentList.ResetFilters();
                 _studentList.SortByGroupNumber();
                 dataGridStudents.Items.Refresh();
             }
@@ -144,6 +146,130 @@ namespace lab6
             {
                 MessageBox.Show(ex.Message, "Помилка сортування", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void btnAvgExamScore_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _studentList.ResetFilters();
+                if (_studentList == null)
+                {
+                    MessageBox.Show("Список студентів не ініціалізовано.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                if (!(cmbAvgScoreBy.SelectedItem is ComboBoxItem cbItem) || !(cbItem.Content is string examKey))
+                {
+                    MessageBox.Show("Оберіть іспит для обчислення середнього.", "Інформація", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                double avg = _studentList.GetAverageExamScore(examKey);
+                MessageBox.Show($"Середній бал за {examKey}: {avg:F2}", "Середній бал", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (ArgumentException ex)
+            {
+                MessageBox.Show(ex.Message, "Невірний параметр", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Невідома помилка: {ex.Message}", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnFindByName_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _studentList.ResetFilters();
+                if (_studentList == null)
+                {
+                    MessageBox.Show("Список студентів не ініціалізовано.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                string query = txtNameFilter.Text?.Trim() ?? string.Empty;
+
+                if (string.IsNullOrEmpty(query))
+                {
+                    _studentList.ResetFilters();
+                    return;
+                }
+
+                _studentList.FindByName(query);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Помилка при пошуку: {ex.Message}", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnTopStudents_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _studentList.ResetFilters();
+                if (_studentList == null)
+                {
+                    MessageBox.Show("Список студентів не ініціалізовано.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                _studentList.GetTopTenByTotalScore();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Помилка при виведенні Топ-10: {ex.Message}", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnGetBestInGroup_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                _studentList.ResetFilters();
+                if (_studentList == null)
+                {
+                    MessageBox.Show("Список студентів не ініціалізовано.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                _studentList.GetBestInGroup();
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Помилка при групуванні: {ex.Message}", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnGetBestStudent_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (_studentList == null)
+                {
+                    MessageBox.Show("Список студентів не ініціалізовано.", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                var best = _studentList.GetBestStudent();
+
+                MessageBox.Show($"Найкращий студент:\nІм'я: {best.Name}\nГрупа: {best.GroupNumber}\nСередній бал: {best.AverageScore:F2}", "Найкращий студент", MessageBoxButton.OK, MessageBoxImage.Information);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Помилка при визначенні найкращого студента: {ex.Message}", "Помилка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void btnResetFilters_Click(object sender, RoutedEventArgs e)
+        {
+            _studentList.ResetFilters();
         }
     }
 }

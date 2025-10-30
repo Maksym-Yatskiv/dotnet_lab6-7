@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:lab6"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="1200">
+        Title="MainWindow" Height="660" Width="1201">
 
     <Grid Margin="8">
         <Grid.RowDefinitions>
@@ -65,9 +65,8 @@
             CanUserAddRows="False"
             ItemsSource="{Binding Students}"
             IsReadOnly="False"
-            Margin="0,0,0,8"
             SelectionMode="Single"
-            SelectedItem="{Binding SelectedStudent, Mode=TwoWay}">
+            SelectedItem="{Binding SelectedStudent, Mode=TwoWay}" Margin="0,0,0,93">
 
 
             <DataGrid.Columns>
@@ -94,8 +93,8 @@
         </DataGrid>
 
 
-        <DockPanel Grid.Row="2" LastChildFill="True">
-            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="0,0,8,0" Width="777" HorizontalAlignment="Right">
+        <DockPanel Grid.Row="1" Margin="0,0,0,42" HorizontalAlignment="Right" Width="800" Height="34" VerticalAlignment="Bottom">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="0,0,8,0" Width="752" Height="25">
                 <TextBlock VerticalAlignment="Center" Margin="0,0,6,0">Фільтрувати за іспитом:</TextBlock>
                 <ComboBox x:Name="cmbSortBy" Width="140" SelectedIndex="0" Margin="0,0,8,0">
                     <ComboBoxItem>Exam1</ComboBoxItem>
@@ -106,12 +105,28 @@
                 <TextBlock VerticalAlignment="Center" Margin="8,0,6,0"><Run Language="uk-ua" Text="Оцінка більша за:"/></TextBlock>
                 <TextBox x:Name="txtFilter" Width="120" ToolTip="Введіть номер групи або мінімальний середній (наприклад: 101 або 80)" Margin="0,0,8,0" />
                 <Button x:Name="btnFilter" Content="Фільтрувати" Width="100" Margin="0,0,10,0" Click="btnFilter_Click"/>
-                <Button x:Name="btnSort" Content="Сортувати за групою" Width="133" Click="btnSort_Click"/>
+                <Button x:Name="btnSort" Content="Сортувати за групою" Width="120" Click="btnSort_Click"/>
             </StackPanel>
-
 
         </DockPanel>
 
-
+        <DockPanel Grid.Row="1" Background="#FFEBD4D4" Height="26" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="1185">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="0,0,8,0" Width="1171">
+                <TextBlock VerticalAlignment="Center" Margin="0,0,6,0"><Run Language="uk-ua" Text="Сер. бал по іспиту:"/></TextBlock>
+                <ComboBox x:Name="cmbAvgScoreBy"  Width="80" SelectedIndex="0" Margin="0,0,8,0">
+                    <ComboBoxItem>Exam1</ComboBoxItem>
+                    <ComboBoxItem>Exam2</ComboBoxItem>
+                    <ComboBoxItem>Exam3</ComboBoxItem>
+                </ComboBox>
+                <Button x:Name="btnAvgExamScore" Content="Розрахувати" Width="80" Click="btnAvgExamScore_Click"/>
+                <TextBlock VerticalAlignment="Center" Margin="40,0,6,0"><Run Language="uk-ua" Text="Пошук за ім'ям:"/></TextBlock>
+                <TextBox x:Name="txtNameFilter" Width="120" Margin="0,0,8,0" Height="23" />
+                <Button x:Name="btnFindByName" Content="Знайти" Width="60" Margin="0,0,20,0" Click="btnFindByName_Click"/>
+                <Button x:Name="btnTopStudents"  Content="Топ 10 студентів" Width="133" Click="btnTopStudents_Click" Margin="0,0,20,0"/>
+                <Button x:Name="btnGetBestInGroup"  Content="Найкращі в групі" Width="105" Click="btnGetBestInGroup_Click" Margin="0,0,20,0"/>
+                <Button x:Name="btnGetBestStudent"  Content="Найкращий учень" Width="119" Click="btnGetBestStudent_Click" Margin="0,0,20,0"/>
+                <Button x:Name="btnResetFilters"  Content="Збросити фільтри" Width="119" Click="btnResetFilters_Click"/>
+            </StackPanel>
+        </DockPanel>
     </Grid>
 </Window>
