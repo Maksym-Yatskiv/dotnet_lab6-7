@@ -1,0 +1,117 @@
+﻿<Window x:Class="lab6.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:lab6"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="1200">
+
+    <Grid Margin="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,8" Grid.Row="0">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
+                <TextBlock VerticalAlignment="Center" Margin="0,0,4,0">ПІБ:</TextBlock>
+                <TextBox x:Name="txtFullName" Width="220"/>
+            </StackPanel>
+
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
+                <TextBlock VerticalAlignment="Center" Margin="0,0,4,0">Група:</TextBlock>
+                <TextBox x:Name="txtGroup" Width="80" />
+            </StackPanel>
+
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
+                <TextBlock VerticalAlignment="Center" Margin="0,0,4,0">Іспит 1:</TextBlock>
+                <TextBox x:Name="txtExam1" Width="60" />
+            </StackPanel>
+
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
+                <TextBlock VerticalAlignment="Center" Margin="0,0,4,0">Іспит 2:</TextBlock>
+                <TextBox x:Name="txtExam2" Width="60" />
+            </StackPanel>
+
+
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,8,0">
+                <TextBlock VerticalAlignment="Center" Margin="0,0,4,0">Іспит 3:</TextBlock>
+                <TextBox x:Name="txtExam3" Width="60" />
+            </StackPanel>
+
+
+            <Button x:Name="btnAdd" Content="Додати" Width="90" Margin="12,0,6,0" Click="btnAdd_Click" />
+            <Button x:Name="btnDelete" Content="Видалити" Width="90" Margin="0,0,6,0" Click="btnDelete_Click" />
+
+
+            <Separator Width="12"/>
+
+
+            <Button x:Name="btnLoad" Content="Завантажити" Width="110" Margin="6,0,6,0" Click="btnLoad_Click" />
+            <Button x:Name="btnSave" Content="Зберегти" Width="110" Click="btnSave_Click" />
+        </StackPanel>
+
+
+
+        <DataGrid x:Name="dataGridStudents"
+            Grid.Row="1"
+            AutoGenerateColumns="False"
+            CanUserAddRows="False"
+            ItemsSource="{Binding Students}"
+            IsReadOnly="False"
+            Margin="0,0,0,8"
+            SelectionMode="Single"
+            SelectedItem="{Binding SelectedStudent, Mode=TwoWay}">
+
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ПІБ" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Width="2*" />
+                <DataGridTextColumn Header="Група" Binding="{Binding GroupNumber, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" Width="*" />
+                <DataGridTextColumn Header="Іспит 1" Binding="{Binding Exam1, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, StringFormat=N0}" Width="100" />
+                <DataGridTextColumn Header="Іспит 2" Binding="{Binding Exam2, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, StringFormat=N0}" Width="100" />
+                <DataGridTextColumn Header="Іспит 3" Binding="{Binding Exam3, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, StringFormat=N0}" Width="100" />
+            </DataGrid.Columns>
+
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="True">
+                            <Setter Property="ToolTip" Value="{Binding (Validation.Errors)[0].ErrorContent, RelativeSource={RelativeSource Self}}" />
+                            <Setter Property="Background" Value="#FFFFE5E5" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+
+
+        </DataGrid>
+
+
+        <DockPanel Grid.Row="2" LastChildFill="True">
+            <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" Margin="0,0,8,0" Width="777" HorizontalAlignment="Right">
+                <TextBlock VerticalAlignment="Center" Margin="0,0,6,0">Фільтрувати за іспитом:</TextBlock>
+                <ComboBox x:Name="cmbSortBy" Width="140" SelectedIndex="0" Margin="0,0,8,0">
+                    <ComboBoxItem>Exam1</ComboBoxItem>
+                    <ComboBoxItem>Exam2</ComboBoxItem>
+                    <ComboBoxItem>Exam3</ComboBoxItem>
+                </ComboBox>
+
+                <TextBlock VerticalAlignment="Center" Margin="8,0,6,0"><Run Language="uk-ua" Text="Оцінка більша за:"/></TextBlock>
+                <TextBox x:Name="txtFilter" Width="120" ToolTip="Введіть номер групи або мінімальний середній (наприклад: 101 або 80)" Margin="0,0,8,0" />
+                <Button x:Name="btnFilter" Content="Фільтрувати" Width="100" Margin="0,0,10,0" Click="btnFilter_Click"/>
+                <Button x:Name="btnSort" Content="Сортувати за групою" Width="133" Click="btnSort_Click"/>
+            </StackPanel>
+
+
+        </DockPanel>
+
+
+    </Grid>
+</Window>
